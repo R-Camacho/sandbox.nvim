@@ -43,6 +43,13 @@ For example, to try the [telescope.nvim](https://github.com/nvim-telescope/teles
 :SandboxTry nvim-telescope/telescope.nvim
 ```
 
+## Roadmap
+
+Planned features for future releases:
+
+- Interactive UI for plugin management
+- Plugin configuration support
+
 ## License
 
 MIT License. See [LICENSE](./LICENSE) for details.
