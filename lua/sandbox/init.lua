@@ -3,8 +3,8 @@ local M = {}
 function M.setup(opts)
 	opts = opts or {}
 	local config = require("sandbox.config")
-	M.config = vim.tbl_deep_extend("force", config, opts)
-	vim.fn.mkdir(M.config.install_path, "p")
+    local core = require("sandbox.core")
+	core.config = vim.tbl_deep_extend("force", config, opts)
 end
 
 function M.try(plugin)
@@ -13,9 +13,10 @@ function M.try(plugin)
 	core.load(plugin)
 end
 
-function M.clean()
+function M.clean(cmd)
+    cmd = cmd or false
 	local core = require("sandbox.core")
-	core.clean()
+	core.clean(cmd)
 end
 
 function M.list()
@@ -36,7 +37,7 @@ end
 -- Clean on leaving nvim
 vim.api.nvim_create_autocmd("VimLeavePre", {
 	callback = function()
-		M.clean()
+		M.clean(false)
 	end,
 })
 
@@ -51,7 +52,7 @@ vim.api.nvim_create_user_command("SandboxList", function()
 end, { nargs = 0 })
 
 vim.api.nvim_create_user_command("SandboxClean", function()
-	M.clean()
+	M.clean(true)
 end, { nargs = "*" })
 
 return M

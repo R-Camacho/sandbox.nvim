@@ -1,5 +1,7 @@
 local M = {}
 
+M.config = {}
+
 local function clone(plugin, plugin_path)
 	local plugin_repo = "https://github.com/" .. plugin
 	local out = vim.fn.system({ "git", "clone", "--depth=1", plugin_repo, plugin_path })
@@ -19,7 +21,7 @@ M.plugins = {}
 
 -- Clone and load plugin
 function M.load(plugin)
-	local config = require("sandbox.config")
+	local config = M.config
 	vim.fn.mkdir(config.install_path, "p")
 
 	local plugin_name = plugin:match(".*/(.*)")
@@ -56,16 +58,22 @@ function M.load(plugin)
 end
 
 -- Clean all of the plugins installed on the sandbox
-function M.clean()
+function M.clean(cmd)
+    cmd = cmd or false -- called from the user command
+	local config = M.config
+
 	if vim.tbl_isempty(M.plugins) then
-		vim.notify("No sandboxed plugins to clean.")
+        if config.debug or cmd then
+		    vim.notify("No sandboxed plugins to clean.")
+        end
 		return
 	end
 
-	local config = require("sandbox.config")
 	M.plugins = {}
 	vim.fn.delete(config.install_path, "rf")
-	vim.notify("Sandbox cleaned " .. config.install_path)
+    if config.debug or cmd then
+	    vim.notify("Sandbox cleaned " .. config.install_path)
+    end
 end
 
 return M
